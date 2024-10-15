@@ -71,11 +71,44 @@ app.get("/api/tasks", async(req,res)=>{
        res.status(400).json({error:error.message}) 
     }
 })
+
+// update tasks
+app.put("/api/tasks/:id", async(req,res)=>{
+    try {
+        const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {new:true});
+        if(!updatedTask){
+            res.status(404).json({error:error.message})
+        }
+        res.json(updatedTask)
+    } catch (error) {
+        res.status(404).json({error: error.message})
+    }
+})
+
+
+// delete tasks
+app.delete("/api/tasks/:id", async(req,res)=>{
+    try {
+        const deleteTask = await Task.findByIdAndDelete(req.params.id)
+        if(!deleteTask){
+            res.status(404).json({error:error.message})
+        }
+        res.json({message:"Task Has Been succesfully deleted."})
+    } catch (error) {
+        res.status(404).json({error:error.message})
+    }
+})
+
+
+
+
+// 404 Handler---
 app.use((req,res)=>{
     res.status(404).json({error: "Not Found"})
 })
 
 
+// server listern
 app.listen(PORT,()=>{
     console.log(`Server is running on http://localhost:${PORT}/`)
 })
