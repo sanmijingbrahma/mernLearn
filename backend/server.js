@@ -75,11 +75,12 @@ app.get("/api/tasks", async(req,res)=>{
 // update tasks
 app.put("/api/tasks/:id", async(req,res)=>{
     try {
-        const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {new:true});
-        if(!updatedTask){
+        if(mongoose.Types.ObjectId.isValid(req.params.id)){
+            const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {new:true});
+            res.json(updatedTask)
+        }else{
             res.status(404).json({error:error.message})
         }
-        res.json(updatedTask)
     } catch (error) {
         res.status(404).json({error: error.message})
     }
@@ -89,15 +90,34 @@ app.put("/api/tasks/:id", async(req,res)=>{
 // delete tasks
 app.delete("/api/tasks/:id", async(req,res)=>{
     try {
-        const deleteTask = await Task.findByIdAndDelete(req.params.id)
-        if(!deleteTask){
+        if(mongoose.Types.ObjectId.isValid(req.params.id)){
+            const deleteTask = await Task.findByIdAndDelete(req.params.id)
+            res.json({message:"Task Has Been succesfully deleted."})
+        }else{
             res.status(404).json({error:error.message})
         }
-        res.json({message:"Task Has Been succesfully deleted."})
     } catch (error) {
         res.status(404).json({error:error.message})
     }
 })
+
+
+//route to mark task complete
+app.patch("/api/tasks/:id/complete", async(req,res)=>{
+    try {
+        if(mongoose.Types.ObjectId.isValid(req.params.id)){
+            const markTask = await Task.findByIdAndUpdate(req.params.id,{$set:req.body}, {new:true})
+            res.json(markTask)
+        }else{
+            res.status(404).json({error:error.message})
+        }
+    } catch (error) {
+        res.status(404).json({error:error.message})
+    }
+})
+
+
+
 
 
 
