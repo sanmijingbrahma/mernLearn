@@ -63,11 +63,14 @@ app.post("/api/tasks", async (req,res)=>{
 })
 
 // to list tasks
+// with pagination
 app.get("/api/tasks", async(req,res)=>{
+    const {page=1,limit=3} = req.query
     try {
-        const tasks = await Task.find()
-        res.status(201).json(tasks);
-    } catch (k) {
+        const tasks = await Task.find().limit(limit*1).skip(limit*(page-1)).exec();
+        const count = await Task.countDocuments();
+        res.status(201).json({tasks, page:page, totaldoc : Math.ceil(count/limit)});
+    } catch (error) {
        res.status(400).json({error:error.message}) 
     }
 })
