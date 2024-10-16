@@ -33,7 +33,8 @@ mongoose.connect(MONGO_URL, {useNewUrlParser:true, useUnifiedTopology:true})
 
 const taskSchema = new mongoose.Schema({
     title: String,
-    completed : Boolean
+    completed : Boolean,
+    dueDate : Date
 })
 
 const Task = mongoose.model("Task",taskSchema)
@@ -119,8 +120,25 @@ app.patch("/api/tasks/:id/complete", async(req,res)=>{
     }
 })
 
+app.get('/api/tasks/completed',async(req,res)=>{
+    try {
+        const tasks = (await Task.find()).filter((task)=>task.completed=true)
+        res.json(tasks)
+    }catch (error) {
+        res.status(404).json({error:error.mes})
+    }
+})
 
 
+
+app.get('/api/tasks/inCompleted',async(req,res)=>{
+    try {
+        const tasks = (await Task.find()).filter((task)=>task.completed!=true)
+        res.json(tasks)
+    } catch (error) {
+        res.status(404).json({error:error.mes})
+    }
+})
 
 
 
