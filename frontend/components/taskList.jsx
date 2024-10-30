@@ -1,6 +1,19 @@
-function taskList(){
+function taskList(tasks){
 
-    return 
+
+
+    return <>
+    <ul>
+        {tasks.map((task)=>{
+            <li key={task._id}>
+                {task.title}-{task.completed?"Completed":"Pending"}:{task.dueDate}
+            </li>
+        })}
+    </ul>
+    
+    
+    
+    </>
 
 
 }
