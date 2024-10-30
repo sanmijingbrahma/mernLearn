@@ -17,3 +17,4 @@ function taskList(tasks){
 
 
 }
+export default taskList
